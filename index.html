@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#05070c">
+<meta name="description" content="THEME DEVELOPER SYSTEM - Professional HTTP Header Analyzer">
+
+<title>THEME DEVELOPER SYSTEM</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#03060a;
+  --panel:#081019;
+  --panel2:#0b1520;
+  --line:#183040;
+  --cyan:#00e5ff;
+  --blue:#2979ff;
+  --green:#00ff9d;
+  --yellow:#ffd166;
+  --red:#ff4d6d;
+  --text:#e9faff;
+  --muted:#718697;
+  --radius:18px;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 10% 5%,rgba(0,229,255,.10),transparent 30%),
+    radial-gradient(circle at 90% 20%,rgba(41,121,255,.10),transparent 32%),
+    var(--bg);
+  font-family:Inter,Arial,sans-serif;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.13;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  left:0;
+  right:0;
+  height:2px;
+  top:-5px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  box-shadow:0 0 25px var(--cyan);
+  opacity:.35;
+  pointer-events:none;
+  animation:screenScan 7s linear infinite;
+}
+
+.container{
+  width:min(1120px,100%);
+  margin:auto;
+  padding:20px 15px 55px;
+  position:relative;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:12px 0 25px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.online-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 15px var(--green);
+  animation:pulse 1.5s infinite;
+}
+
+.system-state{
+  color:var(--muted);
+  font:10px monospace;
+  letter-spacing:1px;
+}
+
+.hero{
+  padding:22px 0 30px;
+}
+
+.eyebrow{
+  color:var(--cyan);
+  font:700 10px monospace;
+  letter-spacing:3px;
+  margin-bottom:12px;
+}
+
+h1{
+  font-size:clamp(36px,8vw,70px);
+  line-height:.95;
+  letter-spacing:-3px;
+}
+
+.gradient{
+  background:linear-gradient(90deg,var(--cyan),#638dff,var(--cyan));
+  background-size:200%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  animation:gradientMove 5s linear infinite;
+}
+
+.subtitle{
+  max-width:700px;
+  color:var(--muted);
+  line-height:1.7;
+  font-size:14px;
+  margin-top:17px;
+}
+
+.panel{
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(145deg,rgba(10,20,30,.96),rgba(4,9,15,.96));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 20px 70px rgba(0,0,0,.35);
+  animation:panelIn .45s ease both;
+}
+
+.panel::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  width:100%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:.7;
+}
+
+.panel::after{
+  content:"";
+  position:absolute;
+  width:100px;
+  height:100px;
+  right:-50px;
+  top:-50px;
+  background:var(--cyan);
+  filter:blur(70px);
+  opacity:.04;
+  pointer-events:none;
+}
+
+.panel-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.panel-title{
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.panel-tag{
+  color:var(--muted);
+  font:9px monospace;
+  letter-spacing:1px;
+}
+
+.input-row{
+  display:flex;
+  gap:10px;
+}
+
+input{
+  flex:1;
+  min-width:0;
+  height:50px;
+  padding:0 15px;
+  border-radius:12px;
+  border:1px solid #203646;
+  outline:none;
+  background:#03070c;
+  color:#fff;
+  font-size:14px;
+  transition:.25s;
+}
+
+input::placeholder{
+  color:#405365;
+}
+
+input:focus{
+  border-color:var(--cyan);
+  box-shadow:
+    0 0 0 3px rgba(0,229,255,.07),
+    0 0 25px rgba(0,229,255,.05);
+}
+
+button{
+  height:50px;
+  padding:0 25px;
+  border:0;
+  border-radius:12px;
+  color:#001018;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));
+  font-weight:900;
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:.25s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 30px rgba(0,229,255,.18);
+}
+
+button:active{
+  transform:scale(.98);
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:13px;
+  color:var(--muted);
+  font:10px monospace;
+}
+
+.status-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
+}
+
+.status-dot.error{
+  background:var(--red);
+  box-shadow:0 0 10px var(--red);
+}
+
+.scan{
+  display:none;
+  margin-top:14px;
+}
+
+.scan.active{
+  display:block;
+}
+
+.scan-track{
+  height:3px;
+  overflow:hidden;
+  border-radius:20px;
+  background:#101d28;
+}
+
+.scan-line{
+  width:35%;
+  height:100%;
+  background:var(--cyan);
+  box-shadow:0 0 15px var(--cyan);
+  animation:scan 1s linear infinite;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.stat{
+  padding:14px;
+  min-height:78px;
+  border-radius:12px;
+  border:1px solid #162a38;
+  background:#050a10;
+  transition:.2s;
+}
+
+.stat:hover{
+  border-color:#285064;
+  transform:translateY(-2px);
+}
+
+.stat-label{
+  display:block;
+  color:var(--muted);
+  font:9px monospace;
+  letter-spacing:1px;
+  margin-bottom:8px;
+}
+
+.stat-value{
+  font-size:17px;
+  font-weight:900;
+  word-break:break-word;
+}
+
+.good{
+  color:var(--green)!important;
+}
+
+.warn{
+  color:var(--yellow)!important;
+}
+
+.bad{
+  color:var(--red)!important;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+
+th,
+td{
+  padding:11px 8px;
+  text-align:left;
+  border-bottom:1px solid #142431;
+  vertical-align:top;
+}
+
+th{
+  color:var(--cyan);
+  font:900 9px monospace;
+  letter-spacing:1px;
+}
+
+td:first-child{
+  width:38%;
+  color:#94a9b8;
+  font-weight:700;
+  word-break:break-word;
+}
+
+td:last-child{
+  word-break:break-word;
+}
+
+.security-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 5px;
+  border-bottom:1px solid #142431;
+  font-size:12px;
+}
+
+.security-name{
+  color:#9db0be;
+}
+
+.security-status{
+  font:900 10px monospace;
+}
+
+.terminal{
+  min-height:80px;
+  color:#7f9baa;
+  font:11px/1.8 monospace;
+}
+
+.log-line{
+  animation:logIn .25s ease both;
+}
+
+.log-ok{
+  color:var(--green);
+}
+
+.log-warn{
+  color:var(--yellow);
+}
+
+.log-error{
+  color:var(--red);
+}
+
+pre{
+  max-height:420px;
+  overflow:auto;
+  padding:15px;
+  margin:0;
+  border:1px solid #162a38;
+  border-radius:12px;
+  background:#020509;
+  color:#b9d5df;
+  font:11px/1.7 monospace;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.footer{
+  padding:20px 0;
+  text-align:center;
+  color:#40515e;
+  font:9px monospace;
+  letter-spacing:1px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+::-webkit-scrollbar{
+  width:7px;
+  height:7px;
+}
+
+::-webkit-scrollbar-track{
+  background:#03070b;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#203846;
+  border-radius:20px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:var(--cyan);
+}
+
+@keyframes pulse{
+  50%{
+    opacity:.35;
+    transform:scale(.7);
+  }
+}
+
+@keyframes scan{
+  from{
+    transform:translateX(-150%);
+  }
+  to{
+    transform:translateX(350%);
+  }
+}
+
+@keyframes screenScan{
+  0%{
+    top:-5px;
+  }
+  100%{
+    top:100vh;
+  }
+}
+
+@keyframes gradientMove{
+  to{
+    background-position:200%;
+  }
+}
+
+@keyframes panelIn{
+  from{
+    opacity:0;
+    transform:translateY(12px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes logIn{
+  from{
+    opacity:0;
+    transform:translateX(-8px);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0);
+  }
+}
+
+@media(max-width:700px){
+
+  .container{
+    padding:15px 11px 45px;
+  }
+
+  .system-state{
+    display:none;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .input-row{
+    flex-direction:column;
+  }
+
+  button{
+    width:100%;
+  }
+
+  h1{
+    font-size:42px;
+    letter-spacing:-2px;
+  }
+
+  .panel{
+    padding:15px;
+  }
+}
+
+@media(max-width:390px){
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  h1{
+    font-size:35px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header class="topbar">
+
+    <div class="brand">
+      <span class="online-dot"></span>
+      THEME DEVELOPER SYSTEM
+    </div>
+
+    <div class="system-state">
+      SYSTEM ONLINE • HTTP MODULE v2.0
+    </div>
+
+  </header>
+
+  <section class="hero">
+
+    <div class="eyebrow">
+      SA TECH SUPPORT / DEVELOPER UTILITY
+    </div>
+
+    <h1>
+      HTTP HEADER<br>
+      <span class="gradient">ANALYZER</span>
+    </h1>
+
+    <p class="subtitle">
+      Professional HTTP inspection interface for analyzing
+      public response headers, security signals and response data.
+    </p>
+
+  </section>
+
+  <section class="panel">
+
+    <div class="panel-header">
+      <div class="panel-title">
+        ◆ TARGET ENDPOINT
+      </div>
+
+      <div class="panel-tag">
+        HTTP / HTTPS
+      </div>
+    </div>
+
+    <div class="input-row">
+
+      <input
+        id="url"
+        type="url"
+        placeholder="https://example.com"
+        autocomplete="off"
+        spellcheck="false"
+      >
+
+      <button id="analyze">
+        ANALYZE
+      </button>
+
+    </div>
+
+    <div class="status">
+
+      <span
+        id="statusDot"
+        class="status-dot">
+      </span>
+
+      <span id="status">
+        SYSTEM READY — WAITING FOR TARGET
+      </span>
+
+    </div>
+
+    <div
+      id="scan"
+      class="scan">
+
+      <div class="scan-track">
+        <div class="scan-line"></div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <main id="results" class="hidden">
+
+    <div class="grid">
+
+      <section class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">
+            ◆ RESPONSE STATUS
+          </div>
+
+          <div class="panel-tag">
+            COMPLETE
+          </div>
+
+        </div>
+
+        <div id="summary"></div>
+
+      </section>
+
+      <section class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">
+            ◆ SECURITY MATRIX
+          </div>
+
+          <div class="panel-tag">
+            HEADER CHECK
+          </div>
+
+        </div>
+
+        <div id="security"></div>
+
+      </section>
+
+    </div>
+
+    <section class="panel">
+
+      <div class="panel-header">
+
+        <div class="panel-title">
+          ◆ HTTP RESPONSE HEADERS
+        </div>
+
+        <div
+          id="headerCount"
+          class="panel-tag">
+          0 HEADERS
+        </div>
+
+      </div>
+
+      <div id="headers"></div>
+
+    </section>
+
+    <section class="panel">
+
+      <div class="panel-header">
+
+        <div class="panel-title">
+          ◆ RESPONSE PREVIEW
+        </div>
+
+        <div class="panel-tag">
+          MAX 10KB
+        </div>
+
+      </div>
+
+      <pre id="body">
+(No response body preview available)
+      </pre>
+
+    </section>
+
+    <section class="panel">
+
+      <div class="panel-header">
+
+        <div class="panel-title">
+          ◆ SYSTEM LOG
+        </div>
+
+        <div class="panel-tag">
+          LIVE
+        </div>
+
+      </div>
+
+      <div
+        id="log"
+        class="terminal">
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    THEME DEVELOPER SYSTEM • SA TECH SUPPORT • v2.0
+  </footer>
+
+</div>
+
+<script>
+
+const urlInput =
+  document.getElementById("url");
+
+const analyzeButton =
+  document.getElementById("analyze");
+
+const statusBox =
+  document.getElementById("status");
+
+const statusDot =
+  document.getElementById("statusDot");
+
+const results =
+  document.getElementById("results");
+
+const scan =
+  document.getElementById("scan");
+
+const logBox =
+  document.getElementById("log");
+
+
+function escapeHTML(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function prepareURL(value){
+
+  if(!/^https?:\/\//i.test(value)){
+    value="https://"+value;
+  }
+
+  return value;
+
+}
+
+
+function setStatus(message,error=false){
+
+  statusBox.textContent=message;
+
+  statusDot.classList.toggle(
+    "error",
+    error
+  );
+
+}
+
+
+function addLog(message,type=""){
+
+  const time =
+    new Date().toLocaleTimeString();
+
+  const line =
+    document.createElement("div");
+
+  line.className =
+    "log-line "+type;
+
+  line.textContent =
+    "["+time+"] "+message;
+
+  logBox.appendChild(line);
+
+  logBox.scrollTop =
+    logBox.scrollHeight;
+
+}
+
+
+function clearResults(){
+
+  results.classList.add("hidden");
+
+  logBox.innerHTML="";
+
+}
+
+
+analyzeButton.addEventListener(
+  "click",
+  analyze
+);
+
+
+urlInput.addEventListener(
+  "keydown",
+  function(event){
+
+    if(event.key==="Enter"){
+      analyze();
+    }
+
+  }
+);
+
+
+async function analyze(){
+
+  let url =
+    urlInput.value.trim();
+
+  if(!url){
+
+    setStatus(
+      "ERROR — ENTER A TARGET URL",
+      true
+    );
+
+    return;
+  }
+
+  url=prepareURL(url);
+
+  try{
+
+    new URL(url);
+
+  }catch{
+
+    setStatus(
+      "ERROR — INVALID URL",
+      true
+    );
+
+    return;
+  }
+
+  analyzeButton.disabled=true;
+
+  clearResults();
+
+  scan.classList.add("active");
+
+  setStatus(
+    "SCANNING TARGET..."
+  );
+
+  const start =
+    performance.now();
+
+  addLog(
+    "Initializing HTTP analyzer..."
+  );
+
+  addLog(
+    "Target: "+url
+  );
+
+  addLog(
+    "Connecting to backend analyzer..."
+  );
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/analyze?url="+
+        encodeURIComponent(url),
+        {
+          method:"GET",
+          headers:{
+            "Accept":"application/json"
+          }
+        }
+      );
+
+    let data;
+
+    try{
+      data=await response.json();
+    }catch{
+      throw new Error(
+        "Backend returned invalid JSON."
+      );
+    }
+
+    if(!response.ok){
+
+      throw new Error(
+        data.error ||
+        "Backend request failed."
+      );
+
+    }
+
+    const elapsed =
+      Math.round(
+        performance.now()-start
+      );
+
+    addLog(
+      "HTTP response received.",
+      "log-ok"
+    );
+
+    addLog(
+      "Security headers processed.",
+      "log-ok"
+    );
+
+    addLog(
+      "Analysis completed in "+
+      elapsed+" ms.",
+      "log-ok"
+    );
+
+    showResults(
+      data,
+      elapsed
+    );
+
+    setStatus(
+      "ANALYSIS COMPLETE — SYSTEM READY"
+    );
+
+  }catch(error){
+
+    addLog(
+      "ERROR: "+error.message,
+      "log-error"
+    );
+
+    setStatus(
+      "ERROR — "+error.message,
+      true
+    );
+
+  }finally{
+
+    scan.classList.remove("active");
+
+    analyzeButton.disabled=false;
+
+  }
+
+}
+
+
+function showResults(data,time){
+
+  results.classList.remove("hidden");
+
+  const headers =
+    data.headers || {};
+
+  const entries =
+    Object.entries(headers);
+
+  document.getElementById(
+    "headerCount"
+  ).textContent =
+    entries.length+" HEADERS";
+
+
+  const statusClass =
+    data.status >= 200 &&
+    data.status < 400
+      ? "good"
+      : "warn";
+
+
+  document.getElementById(
+    "summary"
+  ).innerHTML=`
+
+    <div class="stats">
+
+      <div class="stat">
+
+        <span class="stat-label">
+          HTTP STATUS
+        </span>
+
+        <div class="stat-value ${statusClass}">
+          ${escapeHTML(data.status)}
+        </div>
+
+      </div>
+
+      <div class="stat">
+
+        <span class="stat-label">
+          RESPONSE TIME
+        </span>
+
+        <div class="stat-value">
+          ${escapeHTML(time)} ms
+        </div>
+
+      </div>
+
+      <div class="stat">
+
+        <span class="stat-label">
+          METHOD
+        </span>
+
+        <div class="stat-value">
+          ${escapeHTML(data.method || "GET")}
+        </div>
+
+      </div>
+
+      <div class="stat">
+
+        <span class="stat-label">
+          CONTENT TYPE
+        </span>
+
+        <div
+          class="stat-value"
+          style="font-size:11px">
+
+          ${escapeHTML(
+            headers["content-type"] ||
+            "NOT PROVIDED"
+          )}
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <table style="margin-top:14px">
+
+      <tr>
+        <td>STATUS TEXT</td>
+        <td>
+          ${escapeHTML(data.statusText)}
+        </td>
+      </tr>
+
+      <tr>
+        <td>FINAL URL</td>
+        <td>
+          ${escapeHTML(data.finalUrl)}
+        </td>
+      </tr>
+
+    </table>
+  `;
+
+
+  const securityHeaders=[
+
+    [
+      "strict-transport-security",
+      "HSTS"
+    ],
+
+    [
+      "content-security-policy",
+      "Content-Security-Policy"
+    ],
+
+    [
+      "x-content-type-options",
+      "X-Content-Type-Options"
+    ],
+
+    [
+      "referrer-policy",
+      "Referrer-Policy"
+    ],
+
+    [
+      "permissions-policy",
+      "Permissions-Policy"
+    ],
+
+    [
+      "x-frame-options",
+      "X-Frame-Options"
+    ]
+
+  ];
+
+
+  const security =
+    document.getElementById(
+      "security"
+    );
+
+  security.innerHTML="";
+
+
+  securityHeaders.forEach(
+    ([key,name])=>{
+
+      const exists =
+        Object.keys(headers)
+        .some(
+          header =>
+            header.toLowerCase()===key
+        );
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "security-row";
+
+      const label =
+        document.createElement("span");
+
+      label.className =
+        "security-name";
+
+      label.textContent=name;
+
+      const state =
+        document.createElement("span");
+
+      state.className =
+        "security-status "+
+        (exists ? "good":"warn");
+
+      state.textContent =
+        exists
+          ? "✓ PRESENT"
+          : "⚠ NOT DETECTED";
+
+      row.appendChild(label);
+      row.appendChild(state);
+
+      security.appendChild(row);
+
+    }
+  );
+
+
+  let headersHTML=`
+
+    <table>
+
+      <tr>
+        <th>HEADER</th>
+        <th>VALUE</th>
+      </tr>
+
+  `;
+
+
+  for(
+    const [key,value]
+    of entries
+  ){
+
+    headersHTML+=`
+
+      <tr>
+
+        <td>
+          ${escapeHTML(key)}
+        </td>
+
+        <td>
+          ${escapeHTML(value)}
+        </td>
+
+      </tr>
+
+    `;
+
+  }
+
+
+  headersHTML+="</table>";
+
+
+  document.getElementById(
+    "headers"
+  ).innerHTML=headersHTML;
+
+
+  document.getElementById(
+    "body"
+  ).textContent =
+    data.bodyPreview ||
+    "(No response body preview available)";
+
+
+  results.scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+
+}
+
+</script>
+
+</body>
+</html>
