@@ -1,1 +1,10 @@
 
+{
+  "version": 2,
+  "cleanUrls": true,
+  "functions": {
+    "api/analyze.js": {
+      "maxDuration": 10
+    }
+  }
+}
